@@ -47,6 +47,7 @@ from osdag_core.design_type.connection.beam_beam_end_plate_splice import BeamBea
 from osdag_core.design_type.connection.column_end_plate import ColumnEndPlate
 from osdag_core.design_type.connection.column_cover_plate import ColumnCoverPlate
 from osdag_core.design_type.connection.column_cover_plate_weld import ColumnCoverPlateWeld
+from osdag_core.design_type.flexural_member.flexure_purlin import Flexure_Purlin
 
 import openpyxl
 
@@ -459,6 +460,8 @@ class MainWindow(QMainWindow):
             self.open_column_cover_plate_weld_connection() 
         elif card_title == "Struts in Trusses":
             self.open_struts_in_trusses_compression_member()
+        elif card_title == "Purlin":
+            self.open_flexure_purlin()
 
     #-------------Functions-to-load-modules-in-Tabwidget-START---------------------------
 
@@ -874,7 +877,6 @@ class MainWindow(QMainWindow):
         self.tab_bar.setTabText(index, title)
 
 
-    #new work - harsh chelani
     def open_lap_joint_welded(self):
         title = "Lap Joint Welded Connection"
         self.clear_layout(self.main_widget_layout)
@@ -905,7 +907,6 @@ class MainWindow(QMainWindow):
         self.tab_bar.setTabText(index, title)
 
 
-    #new work - harsh chelani
     def open_lap_joint_bolted(self):
         title = "Lap Joint Bolted Connection"
         self.clear_layout(self.main_widget_layout)
@@ -935,7 +936,6 @@ class MainWindow(QMainWindow):
         index = self.tab_bar.currentIndex()
         self.tab_bar.setTabText(index, title)
 
-    #new work - harsh chelani
     def open_butt_joint_bolted(self):
         title = "Butt Joint Bolted Connection"
         self.clear_layout(self.main_widget_layout)
@@ -965,7 +965,6 @@ class MainWindow(QMainWindow):
         index = self.tab_bar.currentIndex()
         self.tab_bar.setTabText(index, title)
 
-    #new work - harsh chelani
     def open_butt_joint_welded(self):
         title = "Butt Joint Welded Connection"
         self.clear_layout(self.main_widget_layout)
@@ -992,6 +991,35 @@ class MainWindow(QMainWindow):
         butt_joint_welded.openNewTab.connect(self.handle_add_tab)
         butt_joint_welded.downloadDatabase.connect(self.download_Database)
         self.main_widget_layout.addWidget(butt_joint_welded)
+        index = self.tab_bar.currentIndex()
+        self.tab_bar.setTabText(index, title)
+
+    def open_flexure_purlin(self):
+        title = "Purlin"
+        self.clear_layout(self.main_widget_layout)
+        flexure_purlin = CustomWindow(title, Flexure_Purlin, parent=self)
+
+        # Load the last Design Inputs-start------------------------------------
+        last_design_folder = os.path.join('ResourceFiles', 'last_designs')
+        last_design_file = str(flexure_purlin.backend.module_name()).replace(' ', '') + ".osi"
+        last_design_file = os.path.join(last_design_folder, last_design_file)
+        last_design_dictionary = {}
+
+        # Create folder if it doesn't exist
+        if not os.path.isdir(last_design_folder):
+            os.makedirs(last_design_folder)
+
+        # Load previous design if file exists
+        if os.path.isfile(last_design_file):
+            with open(str(last_design_file), 'r') as last_design:
+                last_design_dictionary = yaml.safe_load(last_design)
+                flexure_purlin.setDictToUserInputs(last_design_dictionary)
+        # Load the last Design Inputs-end------------------------------------
+
+        self.main_widget_instance = flexure_purlin
+        flexure_purlin.openNewTab.connect(self.handle_add_tab)
+        flexure_purlin.downloadDatabase.connect(self.download_Database)
+        self.main_widget_layout.addWidget(flexure_purlin)
         index = self.tab_bar.currentIndex()
         self.tab_bar.setTabText(index, title)
 
