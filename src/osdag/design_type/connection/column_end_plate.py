@@ -629,7 +629,7 @@ class ColumnEndPlate(MomentConnection):
 
         print(design_dictionary)
 
-        super(ColumnEndPlate, self).set_input_values(self, design_dictionary)
+        super(ColumnEndPlate, self).set_input_values(design_dictionary)
 
         self.section = Column(designation=design_dictionary[KEY_SECSIZE],
                               material_grade=design_dictionary[KEY_SEC_MATERIAL])

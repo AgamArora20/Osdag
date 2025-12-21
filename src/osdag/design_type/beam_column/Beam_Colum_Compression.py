@@ -553,7 +553,7 @@ class ColumnDesign(Member):
 
     # Setting inputs from the input dock GUI
     def set_input_values(self, design_dictionary):
-        super(ColumnDesign, self).set_input_values(self, design_dictionary)
+        super(ColumnDesign, self).set_input_values(design_dictionary)
 
         # section properties
         self.module = design_dictionary[KEY_MODULE]

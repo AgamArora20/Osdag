@@ -694,7 +694,7 @@ class BeamBeamEndPlateSplice(MomentConnection):
     # get the input values from UI and other functions
     def set_input_values(self, design_dictionary):
         """ get the input values from UI (input dock and DP) for performing the design etc. """
-        super(BeamBeamEndPlateSplice, self).set_input_values(self, design_dictionary)
+        super(BeamBeamEndPlateSplice, self).set_input_values(design_dictionary)
 
         self.mainmodule = "Moment Connection"
         self.module = KEY_DISP_BB_EP_SPLICE

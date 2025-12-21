@@ -597,7 +597,7 @@ class BeamCoverPlateWeld(MomentConnection):
         return KEY_DISP_BEAMCOVERPLATEWELD
 
     def set_input_values(self, design_dictionary):
-        super(BeamCoverPlateWeld, self).set_input_values(self, design_dictionary)
+        super(BeamCoverPlateWeld, self).set_input_values(design_dictionary)
         self.module = design_dictionary[KEY_MODULE]
         self.preference = design_dictionary[KEY_FLANGEPLATE_PREFERENCES]
 

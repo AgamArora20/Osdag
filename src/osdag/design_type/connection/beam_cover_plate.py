@@ -774,7 +774,7 @@ class BeamCoverPlate(MomentConnection):
         return KEY_DISP_BEAMCOVERPLATE
 
     def set_input_values(self, design_dictionary):
-        super(BeamCoverPlate, self).set_input_values(self, design_dictionary)
+        super(BeamCoverPlate, self).set_input_values(design_dictionary)
 
         self.module = design_dictionary[KEY_MODULE]
         # self.connectivity = design_dictionary[KEY_CONN]

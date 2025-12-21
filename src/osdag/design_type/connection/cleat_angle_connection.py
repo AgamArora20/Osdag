@@ -7,6 +7,7 @@ from ...Report_functions import *
 from ...design_report.reportGenerator_latex import CreateLatex
 from ...utils.common.load import Load
 import logging
+logger = logging.getLogger("osdag")
 from importlib.resources import files
 
 class CleatAngleConnection(ShearConnection):
@@ -358,7 +359,7 @@ class CleatAngleConnection(ShearConnection):
         t15 = (KEY_OUT_CLEAT_HEIGHT, KEY_OUT_DISP_CLEAT_HEIGHT, TYPE_TEXTBOX, self.sptd_leg.height if flag else '', True)
         out_list.append(t15)
 
-        t17 = (KEY_OUT_CLEAT_SHEAR, KEY_DISP_SHEAR_YLD, TYPE_TEXTBOX, round(self.sptd_leg.cleat_shear_capacity / 1000, 2) if flag else '', True)
+        t17 = (KEY_OUT_CLEAT_SHEAR, KEY_DISP_SHEAR_YLD, TYPE_TEXTBOX, round(self.sptd_leg.shear_yielding_capacity / 1000, 2) if flag else '', True)
         out_list.append(t17)
 
         t18 = (KEY_OUT_CLEAT_BLK_SHEAR, KEY_DISP_BLK_SHEAR, TYPE_TEXTBOX, round(self.sptd_leg.block_shear_capacity / 1000, 2) if flag else '', True)
@@ -367,7 +368,7 @@ class CleatAngleConnection(ShearConnection):
         t19 = (KEY_OUT_CLEAT_MOM_DEMAND, KEY_DISP_MOM_DEMAND, TYPE_TEXTBOX, round(self.sptd_leg.moment_demand / 1000000, 2) if flag else '', True)
         out_list.append(t19)
         #
-        t20 = (KEY_OUT_CLEAT_MOM_CAPACITY, KEY_DISP_MOM_CAPACITY, TYPE_TEXTBOX, round(self.sptd_leg.cleat_moment_capacity / 1000000, 2) if flag else '', True)
+        t20 = (KEY_OUT_CLEAT_MOM_CAPACITY, KEY_DISP_MOM_CAPACITY, TYPE_TEXTBOX, round(self.sptd_leg.moment_capacity / 1000000, 2) if flag else '', True)
         out_list.append(t20)
 
         """     Cleat Angle Properties: End                       """
@@ -423,7 +424,7 @@ class CleatAngleConnection(ShearConnection):
         t16 = (KEY_OUT_SPTING_BOLT_FORCE, KEY_OUT_DISP_BOLT_FORCE, TYPE_TEXTBOX, round(self.spting_leg.bolt_force / 1000, 2) if flag else '', True)
         out_list.append(t16)
 
-        t6 = (KEY_OUT_BOLT_CAPACITY_SPTING, KEY_OUT_DISP_BOLT_VALUE, TYPE_TEXTBOX, self.bolt_capacity_disp_spting if flag else '', True)
+        t6 = (KEY_OUT_BOLT_CAPACITY_SPTING, KEY_OUT_DISP_BOLT_VALUE, TYPE_TEXTBOX, getattr(self, 'bolt_capacity_disp_spting', '') if flag else '', True)
         out_list.append(t6)
 
         t3_2 = (KEY_OUT_BOLT_IR_DETAILS_SPTING, KEY_OUT_DISP_BOLT_IR_DETAILS, TYPE_OUT_BUTTON, ['Details', self.bolt_capacity_details_suporting], True)
@@ -597,7 +598,7 @@ class CleatAngleConnection(ShearConnection):
     def set_input_values(self, design_dictionary):
         print(design_dictionary)
 
-        super(CleatAngleConnection,self).set_input_values(self, design_dictionary)
+        super(CleatAngleConnection,self).set_input_values(design_dictionary)
         self.module = design_dictionary[KEY_MODULE]
         self.cleat_list = design_dictionary[KEY_ANGLE_LIST]
         self.cleat_material_grade = design_dictionary[KEY_CONNECTOR_MATERIAL]
@@ -615,7 +616,7 @@ class CleatAngleConnection(ShearConnection):
 
         # logger.info("Input values are set. Checking if angle of required thickness is available")
 
-        self.check_available_cleat_thk(self)
+        self.check_available_cleat_thk()
 
     def check_available_cleat_thk(self):
         self.thickness_list = []
@@ -647,7 +648,7 @@ class CleatAngleConnection(ShearConnection):
         # self.cleat_list_leg = []
         if self.cleat_list_thk:
             # logger.info("Required cleat thickness available. Doing preliminary member checks")
-            self.member_capacity(self)
+            self.member_capacity()
         else:
             if self.connectivity in VALUES_CONN_1:
                 logger.error("Cleat Angle should have minimum thickness of {} and maximum leg length of {}."
@@ -656,7 +657,7 @@ class CleatAngleConnection(ShearConnection):
                 logger.error(
                     "Cleat Angle should have minimum thickness of %2.2f." % min_thickness)
     def member_capacity(self):
-        super(CleatAngleConnection, self).member_capacity(self)
+        super(CleatAngleConnection, self).member_capacity()
         self.supported_section.low_shear_capacity = round(0.6 * self.supported_section.shear_yielding_capacity, 2)
 
         if self.supported_section.low_shear_capacity / 1000 > self.load.shear_force and \
@@ -671,7 +672,7 @@ class CleatAngleConnection(ShearConnection):
 
             print("preliminary member check is satisfactory. Checking available Bolt Diameters")
             self.supported_section.design_status = True
-            self.select_bolt_dia_beam(self)
+            self.select_bolt_dia_beam()
 
         else:
             self.design_status = False
@@ -756,7 +757,6 @@ class CleatAngleConnection(ShearConnection):
                         self.sptd_leg.design_status = False
                 if self.sptd_leg.length > self.cleat.leg_a_length or self.sptd_leg.design_status == False or self.sptd_leg.grip_status == False:
                     self.sptd_leg.design_status = False
-                    count = 0
                     continue
                 else:
                     # self.cleat_angle_check(self)
@@ -830,7 +830,7 @@ class CleatAngleConnection(ShearConnection):
 
 
             else:
-                supporting_leg_check = self.select_bolt_dia_supporting(self)
+                supporting_leg_check = self.select_bolt_dia_supporting()
 
             if supporting_leg_check:
                 trial += 1
@@ -900,9 +900,9 @@ class CleatAngleConnection(ShearConnection):
 
             logger.error("The connection cannot be designed with provided bolt diameters or cleat angle list")
         else:
-            self.select_optimum(self)
+            self.select_optimum()
             # print("why repeat",self.bolt.bolt_diameter_provided,self.cleat.designation)
-            self.for_3D_view(self)
+            self.for_3D_view()
             self.design_status = True
             self.sptd_leg.design_status = True
             self.spting_leg.design_status = True
@@ -950,7 +950,7 @@ class CleatAngleConnection(ShearConnection):
         self.sptd_leg.cleat_moment_capacity = self.output[0][30]
         self.sptd_leg.moment_demand = self.output[0][31]
 
-        self.get_bolt_PC(self)
+        self.get_bolt_PC()
 
     def select_bolt_dia_supporting(self):
 

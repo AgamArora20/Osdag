@@ -793,7 +793,7 @@ class Tension_bolted(Member):
 
         "initialisation of components required to design a tension member along with connection"
 
-        super(Tension_bolted,self).set_input_values(self, design_dictionary)
+        super(Tension_bolted,self).set_input_values(design_dictionary)
         self.module = design_dictionary[KEY_MODULE]
         self.sizelist = design_dictionary[KEY_SECSIZE]
         self.sec_profile = design_dictionary[KEY_SEC_PROFILE]

@@ -880,7 +880,7 @@ class BeamColumnEndPlate(MomentConnection):
     # get the input values from UI and other functions
     def set_input_values(self, design_dictionary):
         """ get the input values from UI (input dock and DP) for performing the design etc. """
-        super(BeamColumnEndPlate, self).set_input_values(self, design_dictionary)
+        super(BeamColumnEndPlate, self).set_input_values(design_dictionary)
 
         self.module = KEY_DISP_BCENDPLATE
         self.mainmodule = "Moment Connection"

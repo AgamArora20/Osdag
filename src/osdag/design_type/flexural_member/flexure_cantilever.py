@@ -687,7 +687,7 @@ class Flexure_Cantilever(Member):
                 if self.lambda_lt < 0.4:
                     self.design_type == KEY_DISP_DESIGN_TYPE_FLEXURE
         '''
-        super(Flexure_Cantilever, self).set_input_values(self, design_dictionary)
+        super(Flexure_Cantilever, self).set_input_values(design_dictionary)
 
         # section properties
         self.module = design_dictionary[KEY_MODULE]

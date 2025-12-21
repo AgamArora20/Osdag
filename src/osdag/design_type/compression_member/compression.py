@@ -880,7 +880,7 @@ class Compression(Member):
     # Setting inputs from the input dock GUI
 
     def set_input_values(self, design_dictionary):
-        super(Compression,self).set_input_values(self, design_dictionary)
+        super(Compression,self).set_input_values(design_dictionary)
         #self.sizelist == self.sec_list
         # section properties
         self.module = design_dictionary[KEY_MODULE]

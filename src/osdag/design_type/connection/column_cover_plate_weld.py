@@ -678,7 +678,7 @@ class ColumnCoverPlateWeld(MomentConnection):
         return KEY_DISP_COLUMNCOVERPLATEWELD
 
     def set_input_values(self, design_dictionary):
-        super(ColumnCoverPlateWeld, self).set_input_values(self, design_dictionary)
+        super(ColumnCoverPlateWeld, self).set_input_values(design_dictionary)
         # self.module = design_dictionary[KEY_MODULE]
         # global design_status
         # self.design_status = False # todo doubt of true or false

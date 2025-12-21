@@ -647,7 +647,7 @@ class SeatedAngleConnection(ShearConnection):
         return capacities
 
     def set_input_values(self, design_dictionary):
-        super(SeatedAngleConnection,self).set_input_values(self, design_dictionary)
+        super(SeatedAngleConnection,self).set_input_values(design_dictionary)
         self.seated_angle = Angle(designation= design_dictionary[KEY_ANGLE_LIST][0], material_grade=design_dictionary[KEY_CONNECTOR_MATERIAL])
         self.top_angle = Angle(designation= design_dictionary[KEY_ANGLE_LIST][0], material_grade=design_dictionary[KEY_CONNECTOR_MATERIAL])
         self.module = design_dictionary[KEY_MODULE]
