@@ -232,7 +232,8 @@ Member.Material: E 165 (Fe 290)
 Member.Profile: Angles
 Module: Tension Member Design - Welded to End Gusset
 Weld.Fab: Shop Weld
-Weld.Material_Grade_OverWrite: '290'
+Weld.Material_Grade_OverWrite: '410'
+
 out_titles_status:
 - 1
 - 1

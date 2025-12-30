@@ -36,7 +36,7 @@ Bolt.Slip_Factor: '0.3'
 Bolt.TensionType: Pretensioned
 Bolt.Type: Friction Grip Bolt
 Connectivity *: Column Web-Beam Web
-Connector.Material: E 250 (Fe 410 W)A
+Connector.Material: E 250 (Fe 410 W)
 Connector.Plate.Thickness_List:
 - '8'
 - '10'
@@ -67,11 +67,11 @@ Detailing.Edge_type: Sheared or hand flame cut
 Detailing.Gap: '10'
 Load.Axial: ''
 Load.Shear: '5'
-Material: E 250 (Fe 410 W)A
+Material: E 250 (Fe 410 W)
 Member.Supported_Section.Designation: JB 150
-Member.Supported_Section.Material: E 250 (Fe 410 W)A
+Member.Supported_Section.Material: E 250 (Fe 410 W)
 Member.Supporting_Section.Designation: HB 200
-Member.Supporting_Section.Material: E 250 (Fe 410 W)A
+Member.Supporting_Section.Material: E 250 (Fe 410 W)
 Module: Fin Plate Connection
 Weld.Fab: Shop Weld
 Weld.Material_Grade_OverWrite: '410'

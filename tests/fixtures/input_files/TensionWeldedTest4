@@ -1,12 +1,12 @@
 Conn_Location: Web
-Connector.Material: E 250 (Fe 410 W)A
+Connector.Material: E 250 (Fe 410 W)
 Connector.Plate.Thickness_List:
 - '10'
 - '12'
 - '16'
 Design.Design_Method: Limit State Design
 Load.Axial: '110'
-Material: E 250 (Fe 410 W)A
+Material: E 250 (Fe 410 W)
 Member.Designation:
 - MC 75
 - MC 100

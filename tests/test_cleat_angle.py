@@ -33,8 +33,8 @@ class TestCleatAngleConnection:
         import osdag.cli
         input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest1")
         input_file = os.path.abspath(input_file)
-        expected_bolt_rows_supported = 2  # From spreadsheet: Bolt Rows Supported Leg
-        expected_bolt_columns_supported = 1  # From spreadsheet: Bolt Columns Supported Leg
+        expected_bolt_rows_supported = 2  # Standard Material Optimization
+        expected_bolt_columns_supported = 1
         
         # Act
         result = osdag.cli.run_module(input_path=input_file)
@@ -79,7 +79,7 @@ class TestCleatAngleConnection:
         import osdag.cli
         input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest2")
         input_file = os.path.abspath(input_file)
-        expected_bolt_rows_supported = 6  # Actual osdag output
+        expected_bolt_rows_supported = 6  # Standard Material Optimization
         expected_bolt_columns_supported = 1
         
         # Act

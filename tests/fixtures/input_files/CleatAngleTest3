@@ -88,15 +88,15 @@ Connector.Angle_List:
 - 180 x 180 x 18
 - 180 x 180 x 20
 - 200 x 200 x 24
-Connector.Material: E 250 (Fe 410 W)A
+Connector.Material: E 250 (Fe 410 W)
 Design.Design_Method: Limit State Design
 Detailing.Corrosive_Influences: 'No'
 Detailing.Edge_type: Sheared or hand flame cut
 Detailing.Gap: '10'
 Load.Shear: '35'
-Material: E 250 (Fe 410 W)A
+Material: E 250 (Fe 410 W)
 Member.Supported_Section.Designation: LB 200
-Member.Supported_Section.Material: E 250 (Fe 410 W)A
+Member.Supported_Section.Material: E 250 (Fe 410 W)
 Member.Supporting_Section.Designation: HB 225
-Member.Supporting_Section.Material: E 250 (Fe 410 W)A
+Member.Supporting_Section.Material: E 250 (Fe 410 W)
 Module: Cleat Angle Connection

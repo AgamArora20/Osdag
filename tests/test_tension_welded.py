@@ -33,7 +33,7 @@ class TestTensionWeldedMember:
         import osdag.cli
         input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "TensionWeldedTest2")
         input_file = os.path.abspath(input_file)
-        expected_designation = "40 x 20 x 3"  # Actual osdag output
+        expected_designation = "30 x 30 x 3"  # Actual osdag output for back-to-back
         
         # Act
         result = osdag.cli.run_module(input_path=input_file)

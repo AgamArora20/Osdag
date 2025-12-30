@@ -1,5 +1,5 @@
 Conn_Location: Long Leg
-Connector.Material: E 250 (Fe 410 W)A
+Connector.Material: E 250 (Fe 410 W)
 Connector.Plate.Thickness_List:
 - '8'
 - '10'
@@ -26,7 +26,7 @@ Connector.Plate.Thickness_List:
 - '120'
 Design.Design_Method: Limit State Design
 Load.Axial: '70'
-Material: E 250 (Fe 410 W)A
+Material: E 250 (Fe 410 W)
 Member.Designation:
 - 20 x 20 x 3
 - 20 x 20 x 4
@@ -228,7 +228,7 @@ Member.Designation:
 - 200 x 150 x 15
 - 200 x 150 x 18
 Member.Length: '1250'
-Member.Material: E 250 (Fe 410 W)A
+Member.Material: E 250 (Fe 410 W)
 Member.Profile: Back to Back Angles
 Module: Tension Member Design - Welded to End Gusset
 Weld.Fab: Shop Weld
