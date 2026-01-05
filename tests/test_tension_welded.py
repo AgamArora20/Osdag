@@ -11,7 +11,7 @@ class TestTensionWeldedMember:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "TensionWeldedTest1")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "TensionWeldedTest1.osi")
         input_file = os.path.abspath(input_file)
         expected_designation = "20 x 20 x 3"  # Actual osdag output
         
@@ -31,7 +31,7 @@ class TestTensionWeldedMember:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "TensionWeldedTest2")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "TensionWeldedTest2.osi")
         input_file = os.path.abspath(input_file)
         expected_designation = "30 x 30 x 3"  # Actual osdag output for back-to-back
         
@@ -51,7 +51,7 @@ class TestTensionWeldedMember:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "TensionWeldedTest3")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "TensionWeldedTest3.osi")
         input_file = os.path.abspath(input_file)
         expected_weld_size = 3  # Actual osdag output
         
@@ -75,7 +75,7 @@ class TestTensionWeldedMember:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "TensionWeldedTest4")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "TensionWeldedTest4.osi")
         input_file = os.path.abspath(input_file)
         expected_strength = 450.0
         

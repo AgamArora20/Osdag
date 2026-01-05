@@ -11,7 +11,7 @@ class TestFinPlateConnection:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "FinPlateTest1")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "FinPlateTest1.osi")
         input_file = os.path.abspath(input_file)
         expected_bolt_rows = 2  # From spreadsheet
         expected_bolt_columns = 1  # From spreadsheet
@@ -36,7 +36,7 @@ class TestFinPlateConnection:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "FinPlateTest2")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "FinPlateTest2.osi")
         input_file = os.path.abspath(input_file)
         expected_bolt_rows = 2
         expected_bolt_columns = 1
@@ -62,7 +62,7 @@ class TestFinPlateConnection:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "FinPlateTest3")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "FinPlateTest3.osi")
         input_file = os.path.abspath(input_file)
         expected_capacity = 200.0
         

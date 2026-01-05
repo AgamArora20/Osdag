@@ -11,7 +11,7 @@ class TestCleatAngleConnection:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest1")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest1.osi")
         input_file = os.path.abspath(input_file)
         expected_designation = "50 x 50 x 3"  # Actual osdag output
         
@@ -31,7 +31,7 @@ class TestCleatAngleConnection:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest1")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest1.osi")
         input_file = os.path.abspath(input_file)
         expected_bolt_rows_supported = 2  # Standard Material Optimization
         expected_bolt_columns_supported = 1
@@ -57,7 +57,7 @@ class TestCleatAngleConnection:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest2")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest2.osi")
         input_file = os.path.abspath(input_file)
         expected_designation = "60 x 60 x 4"  # Actual osdag output
         
@@ -77,7 +77,7 @@ class TestCleatAngleConnection:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest2")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest2.osi")
         input_file = os.path.abspath(input_file)
         expected_bolt_rows_supported = 6  # Standard Material Optimization
         expected_bolt_columns_supported = 1
@@ -103,7 +103,7 @@ class TestCleatAngleConnection:
         """
         # Arrange
         import osdag.cli
-        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest3")
+        input_file = os.path.join(os.path.dirname(__file__), "fixtures", "input_files", "CleatAngleTest3.osi")
         input_file = os.path.abspath(input_file)
         expected_value = 150.0
         
