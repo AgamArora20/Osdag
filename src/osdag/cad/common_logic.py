@@ -2086,7 +2086,7 @@ class CommonDesignLogic(object):
             return shape
 
 
-    def display_3DModel(self, component, bgcolor):
+    def display_3DModel(self, component, bgcolor, ifc_path=None):
 
         self.component = component
 
@@ -2094,17 +2094,33 @@ class CommonDesignLogic(object):
 
         self.display.View_Iso()
 
-        self.display.FitAll()
+        # self.display.FitAll()
 
         self.display.DisableAntiAliasing()
 
         if bgcolor == "gradient_bg":
-
             self.display.set_bg_gradient_color([51, 51, 102], [150, 150, 170])
         else:
             self.display.set_bg_gradient_color([255, 255, 255], [255, 255, 255])
+            
+        print(f"[IFC-DISPLAY] Render Triggered for component: {component}, IFC path: {ifc_path}")
+        
+        # ─── New IFC-Based Rendering Path ───
+        # If an IFC path is provided and we are requesting the full "Model" view, 
+        # favor the IFC loader which handles coordinate systems and hierarchy according to Revit-compatible mappers.
+        if component == "Model" and ifc_path and os.path.exists(ifc_path):
+            from osdag.utilities.ifc_loader import display_ifc_in_viewer
+            try:
+                display_ifc_in_viewer(self.display, ifc_path)
+                print(f"[IFC-DISPLAY] Successfully rendered IFC model: {ifc_path}")
+                return # Exit early as IFC display is comprehensive
+            except Exception as e:
+                print(f"[IFC-DISPLAY] IFC Rendering failed, falling back to legacy OCC path: {e}")
+                import traceback
+                traceback.print_exc()
 
-        if self.mainmodule  == "Shear Connection":
+        # Legacy OCC Path (for individual item views or as a fallback)
+        if self.mainmodule == "Shear Connection":
 
             A = self.module_class()
 
@@ -2576,6 +2592,105 @@ class CommonDesignLogic(object):
 
 
 
+    def export_3d_model_to_ifc(self, flag):
+        if not flag:
+            return None
+            
+        import os
+        import json
+        import subprocess
+        import sys
+        from osdag_core.export_ifc.cad_extraction import extract_cad_items, extract_metadata, obj_to_dict
+        
+        # Determine the CAD object to extract from based on the current module and connection
+        cad_obj = None
+        if hasattr(self, 'connectivityObj') and self.connectivityObj:
+            cad_obj = self.connectivityObj
+        elif hasattr(self, 'CPObj') and self.CPObj:
+            cad_obj = self.CPObj
+        elif hasattr(self, 'CEPObj') and self.CEPObj:
+            cad_obj = self.CEPObj
+        elif hasattr(self, 'BPObj') and self.BPObj:
+            cad_obj = self.BPObj
+        elif hasattr(self, 'ColObj') and self.ColObj:
+            cad_obj = self.ColObj
+        elif hasattr(self, 'FObj') and self.FObj:
+            cad_obj = self.FObj
+        elif hasattr(self, 'TObj') and self.TObj:
+            cad_obj = self.TObj
+            
+        if cad_obj is None:
+            print(f"[IFC-EXPORT] Warning: No active CAD object found for mainmodule: {self.mainmodule}, connection: {self.connection}")
+            return None
+            
+        print(f"[IFC-EXPORT] Starting extraction for CAD object: {type(cad_obj).__name__}")
+        
+        # 1. Extract categorized OSDAG objects from the CAD model
+        try:
+            members, plates, bolts, welds, others = extract_cad_items(cad_obj)
+        except Exception as e:
+            print(f"[IFC-EXPORT] Error in extract_cad_items: {e}")
+            traceback.print_exc()
+            return None
+            
+        # 2. Extract Metadata (BoQ, Design Status, etc.)
+        # Use the module class instance if available
+        module_instance = None
+        if hasattr(self, 'module_class') and callable(self.module_class):
+             try:
+                 module_instance = self.module_class()
+             except:
+                 pass
+        
+        metadata = extract_metadata(module_instance) if module_instance else {}
+        
+        # 3. Prepare JSON serialization payload
+        payload = {
+            "members": [obj_to_dict(m) for m in members],
+            "plates": [obj_to_dict(p) for p in plates],
+            "bolts": [obj_to_dict(b) for b in bolts],
+            "welds": [obj_to_dict(w) for w in welds],
+            "others": [obj_to_dict(o) for o in others],
+            "metadata": metadata
+        }
+        
+        # 4. Save payload to temporary directory
+        temp_dir = os.path.join(str(self.folder), "temp_ifc")
+        if not os.path.exists(temp_dir):
+            os.makedirs(temp_dir)
+        
+        json_path = os.path.join(temp_dir, "cad_payload.json")
+        ifc_path = os.path.join(temp_dir, "extracted_model.ifc")
+        
+        with open(json_path, 'w') as f:
+            json.dump(payload, f, indent=4)
+            
+        # 5. Invoke the IFC Generator via subprocess to ensure clean environment (Conda activation handling)
+        # Using sys.executable to ensure we use the same Python environment
+        exporter_script = os.path.abspath(os.path.join(os.getcwd(), "src", "osdag_core", "export_ifc", "subprocess_ifc_exporter.py"))
+        
+        print(f"[IFC-EXPORT] Invoking subprocess exporter: {exporter_script}")
+        cmd = [
+            sys.executable,
+            exporter_script,
+            "--json", json_path,
+            "--ifc", ifc_path,
+            "--id", str(self.connection)
+        ]
+        
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            print(f"[IFC-EXPORT] Subprocess Success: {result.stdout}")
+            return ifc_path
+        except subprocess.CalledProcessError as e:
+            print(f"[IFC-EXPORT] Subprocess Failed with exit code {e.returncode}")
+            print(f"STDOUT: {e.stdout}")
+            print(f"STDERR: {e.stderr}")
+            return None
+        except Exception as e:
+            print(f"[IFC-EXPORT] Unexpected failure: {e}")
+            return None
+
     def call_3DModel(self, flag, module_class):  # Done
 
         self.module_class = module_class
@@ -2598,7 +2713,8 @@ class CommonDesignLogic(object):
                 else:
                     self.connectivityObj = self.create3DBeamWebBeamWeb()
 
-                self.display_3DModel("Model","gradient_bg")
+                ifc_path = self.export_3d_model_to_ifc(flag)
+                self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
             else:
                 self.display.EraseAll()
 
@@ -2606,48 +2722,41 @@ class CommonDesignLogic(object):
 
             if self.connection == KEY_DISP_BEAMCOVERPLATE or self.connection == KEY_DISP_BEAMCOVERPLATEWELD:
                 if flag is True:
-
                     self.CPObj = self.createBBCoverPlateCAD()
-
-                    self.display_3DModel("Model", "gradient_bg")
+                    ifc_path = self.export_3d_model_to_ifc(flag)
+                    self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
                 else:
                     self.display.EraseAll()
 
             elif self.connection == KEY_DISP_BB_EP_SPLICE:
                 if flag is True:
-
                     self.CPObj = self.createBBEndPlateCAD()
-
-                    self.display_3DModel("Model", "gradient_bg")
-
+                    ifc_path = self.export_3d_model_to_ifc(flag)
+                    self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
                 else:
                     self.display.EraseAll()
 
             elif self.connection == KEY_DISP_BCENDPLATE:
                 if flag is True:
-
                     self.CPObj = self.createBCEndPlateCAD()
-
-                    self.display_3DModel("Model", "gradient_bg")
-
+                    ifc_path = self.export_3d_model_to_ifc(flag)
+                    self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
                 else:
                     self.display.EraseAll()
 
             elif self.connection == KEY_DISP_COLUMNCOVERPLATE or self.connection == KEY_DISP_COLUMNCOVERPLATEWELD:
                 if flag is True:
-
                     self.CPObj = self.createCCCoverPlateCAD()
-
-                    self.display_3DModel("Model", "gradient_bg")
-
+                    ifc_path = self.export_3d_model_to_ifc(flag)
+                    self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
                 else:
                     self.display.EraseAll()
 
             elif self.connection == KEY_DISP_COLUMNENDPLATE:
                 if flag is True:
                     self.CEPObj = self.createCCEndPlateCAD()
-
-                    self.display_3DModel("Model", "gradient_bg")
+                    ifc_path = self.export_3d_model_to_ifc(flag)
+                    self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
                 else:
                     self.display.EraseAll()
 
@@ -2655,16 +2764,16 @@ class CommonDesignLogic(object):
 
                 if flag is True:
                     self.BPObj = self.createBasePlateCAD()
-
-                    self.display_3DModel("Model", "gradient_bg")
-
+                    ifc_path = self.export_3d_model_to_ifc(flag)
+                    self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
                 else:
                     self.display.EraseAll()
         elif self.mainmodule == 'Flexure Member':
             if flag is True:
                 self.FObj = self.createSimplySupportedBeam()
 
-                self.display_3DModel("Model", "gradient_bg")
+                ifc_path = self.export_3d_model_to_ifc(flag)
+                self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
             else:
                 self.display.EraseAll()
 
@@ -2672,7 +2781,8 @@ class CommonDesignLogic(object):
             if flag is True:
                 self.FObj = self.createCantileverBeam()
 
-                self.display_3DModel("Model", "gradient_bg")
+                ifc_path = self.export_3d_model_to_ifc(flag)
+                self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
             else:
                 self.display.EraseAll()
 
@@ -2680,7 +2790,8 @@ class CommonDesignLogic(object):
             if flag is True:
                 self.FObj = self.createPurlin()
 
-                self.display_3DModel("Model", "gradient_bg")
+                ifc_path = self.export_3d_model_to_ifc(flag)
+                self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
             else:
                 self.display.EraseAll()
 
@@ -2688,7 +2799,8 @@ class CommonDesignLogic(object):
             if flag is True:
                 self.ColObj = self.createColumnInFrameCAD()
 
-                self.display_3DModel("Model", "gradient_bg")
+                ifc_path = self.export_3d_model_to_ifc(flag)
+                self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
 
             else:
                 self.display.EraseAll()
@@ -2696,7 +2808,8 @@ class CommonDesignLogic(object):
             if flag is True:
                 self.ColObj = self.createStrutsInTrusses()
 
-                self.display_3DModel("Model", "gradient_bg")
+                ifc_path = self.export_3d_model_to_ifc(flag)
+                self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
 
             else:
                 self.display.EraseAll()
@@ -2704,7 +2817,8 @@ class CommonDesignLogic(object):
             if flag is True:
                 self.ColObj = self.createBoltedLapJoint()
 
-                self.display_3DModel("Model", "gradient_bg")
+                ifc_path = self.export_3d_model_to_ifc(flag)
+                self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
 
             else:
                 self.display.EraseAll()
@@ -2713,7 +2827,8 @@ class CommonDesignLogic(object):
             if flag is True:
                 self.ColObj = self.createButtJointBoltedCAD()
 
-                self.display_3DModel("Model", "gradient_bg")
+                ifc_path = self.export_3d_model_to_ifc(flag)
+                self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
 
             else:
                 self.display.EraseAll()
@@ -2722,9 +2837,8 @@ class CommonDesignLogic(object):
 
                 if flag is True:
                     self.TObj = self.createTensionCAD()
-
-                    self.display_3DModel("Model", "gradient_bg")
-
+                    ifc_path = self.export_3d_model_to_ifc(flag)
+                    self.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
                 else:
                     self.display.EraseAll()
 

@@ -230,7 +230,8 @@ class Window(QMainWindow):
                     
                     # Set up for image generation
                     self.commLogicObj.display = off_display
-                    self.commLogicObj.display_3DModel("Model", "gradient_bg")
+                    ifc_path = self.commLogicObj.export_3d_model_to_ifc(main.design_status)
+                    self.commLogicObj.display_3DModel("Model", "gradient_bg", ifc_path=ifc_path)
 
                     image_folder_path = "./ResourceFiles/images"
                     if not os.path.exists(image_folder_path):
