@@ -969,18 +969,18 @@ class CommonDesignLogic(object):
 
 
 
-        print("bolt_diameter_provided:", BCE.bolt_diameter_provided)
-        print("bolt_grade_provided:", BCE.bolt_grade_provided)
-        print("bolt_numbers:", BCE.bolt_numbers)
-        print("BCE.ep_height_provided:", BCE.ep_height_provided)
-        print("BCE.ep_width_provided:", BCE.ep_width_provided)
-
-        print("BCE.edge_distance_provided:", BCE.edge_distance_provided)
-        print("BCE.end_distance_provided:", BCE.end_distance_provided)
-        print("BCE.endplate_type:", BCE.endplate_type)
-        print("BCE.ep_height_max:", BCE.ep_height_max)
-        print("BCE.epsilon_beam:", BCE.epsilon_beam)
-        print("BCE.plate_thickness:", BCE.plate_thickness)
+#        print("bolt_diameter_provided:", BCE.bolt_diameter_provided)
+#        print("bolt_grade_provided:", BCE.bolt_grade_provided)
+#        print("bolt_numbers:", BCE.bolt_numbers)
+#        print("BCE.ep_height_provided:", BCE.ep_height_provided)
+#        print("BCE.ep_width_provided:", BCE.ep_width_provided)
+#
+#        print("BCE.edge_distance_provided:", BCE.edge_distance_provided)
+#        print("BCE.end_distance_provided:", BCE.end_distance_provided)
+#        print("BCE.endplate_type:", BCE.endplate_type)
+#        print("BCE.ep_height_max:", BCE.ep_height_max)
+#        print("BCE.epsilon_beam:", BCE.epsilon_beam)
+#        print("BCE.plate_thickness:", BCE.plate_thickness)
 
 
 

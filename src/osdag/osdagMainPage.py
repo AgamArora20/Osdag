@@ -101,7 +101,7 @@ sqlitepath = files('osdag.data.ResourceFiles.Database').joinpath('Intg_osdag.sql
 
 if sqlpath.exists():
     if not sqlitepath.exists():
-        cmd = 'sqlite3 ' + str(sqlitepath) + ' < ' + str(sqlpath)
+        cmd = 'sqlite3 "' + str(sqlitepath) + '" < "' + str(sqlpath) + '"'
         os.system(cmd)
         sqlpath.touch()
         print('Database Created')
@@ -109,7 +109,7 @@ if sqlpath.exists():
     elif sqlitepath.stat().st_size == 0 or sqlitepath.stat().st_mtime < sqlpath.stat().st_mtime - 1:
         try:
             sqlitenewpath = files('osdag.data.ResourceFiles.Database').joinpath('Intg_osdag_new.sqlite')
-            cmd = 'sqlite3 ' + str(sqlitenewpath) + ' < ' + str(sqlpath)
+            cmd = 'sqlite3 "' + str(sqlitenewpath) + '" < "' + str(sqlpath) + '"'
             error = os.system(cmd)
             print(error)
             # if error != 0:

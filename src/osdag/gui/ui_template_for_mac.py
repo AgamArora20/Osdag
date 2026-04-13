@@ -440,7 +440,7 @@ class Window(QMainWindow):
             checkBox.setFocusPolicy(QtCore.Qt.TabFocus)
             checkBox.setObjectName(component[0])
             checkBox.setText(component[0])
-            checkBox.setDisabled(True)
+            checkBox.setDisabled(False)
             function_name = component[1]
             self.chkbox_connect(main, checkBox, function_name)
             checkBox.resize(checkBox.sizeHint())
@@ -1980,7 +1980,7 @@ class Window(QMainWindow):
                     input_field.textChanged.connect(self.clear_output_fields)
                 elif type(input_field) == QtWidgets.QComboBox:
                     input_field.currentIndexChanged.connect(self.clear_output_fields)
-            self.textEdit.clear()
+            self.textEdit.clear(); [c.setDisabled(False) for c in self.frame.findChildren(QtWidgets.QCheckBox)]
             with open("logging_text.log", 'w') as log_file:
                 pass
             error = main.func_for_validation(main, self.design_inputs)
@@ -2029,16 +2029,12 @@ class Window(QMainWindow):
             with open(str(last_design_file), 'w') as last_design:
                 yaml.dump(self.design_inputs, last_design)
             self.design_inputs.pop("out_titles_status")
-            if status is True and main.module in [KEY_DISP_FINPLATE, KEY_DISP_BEAMCOVERPLATE,
-                                                  KEY_DISP_BEAMCOVERPLATEWELD, KEY_DISP_CLEATANGLE,
-                                                  KEY_DISP_ENDPLATE, KEY_DISP_BASE_PLATE, KEY_DISP_SEATED_ANGLE,
-                                                  KEY_DISP_TENSION_BOLTED, KEY_DISP_TENSION_WELDED,KEY_DISP_COLUMNCOVERPLATE,
-                                                  KEY_DISP_COLUMNCOVERPLATEWELD, KEY_DISP_COLUMNENDPLATE]:
+            if True:
 
                 self.commLogicObj = CommonDesignLogic(self.display, self.folder, main.module, main.mainmodule)
                 status = main.design_status
                 module_class = self.return_class(main.module)
-                self.commLogicObj.call_3DModel(status, module_class)
+                self.commLogicObj.call_3DModel(status, main)
                 self.display_x = 90
                 self.display_y = 90
                 for chkbox in main.get_3d_components(main):
